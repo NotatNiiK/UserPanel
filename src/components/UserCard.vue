@@ -6,9 +6,9 @@
           {{ user.first_name }} {{ user.last_name }}
         </v-card-title>
         <v-card-subtitle>{{ user.email }}</v-card-subtitle>
-        <div>
-          <v-btn>Delete</v-btn>
-          <v-btn>Edit</v-btn>
+        <div class="buttons">
+          <v-btn size="small">Delete</v-btn>
+          <v-btn size="small" class="ml-2">Edit</v-btn>
         </div>
       </v-col>
       <v-col>
@@ -27,3 +27,9 @@ interface IProps {
 
 defineProps<IProps>();
 </script>
+
+<style scoped lang="scss">
+.buttons {
+  padding: 15px;
+}
+</style>

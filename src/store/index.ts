@@ -1,15 +1,11 @@
 import { createStore } from "vuex";
 import { IUsers } from "../models/user";
-import { IPageParams, IApiError } from "../models/api.response";
+import { IApiError, IErrorObject } from "../models/api.response";
 import UserService from "../services/UserService";
 
-interface State {
-  users: IUsers;
-}
-
-export default createStore<State>({
+export default createStore({
   actions: {
-    async getUsers(): Promise<IUsers | { error: boolean; message: string }> {
+    async getUsers(): Promise<IUsers | IErrorObject> {
       try {
         const {
           data: { data },
@@ -26,5 +22,4 @@ export default createStore<State>({
       }
     },
   },
-  getters: {},
 });

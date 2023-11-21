@@ -1,5 +1,6 @@
 <template>
   <loader v-if="loading" />
+  <h2 class="not-found" v-else-if="!loading && users.length === 0"></h2>
   <v-item-group v-else>
     <v-row>
       <v-col v-for="user in users" :key="user.id" cols="12" md="4">
@@ -23,3 +24,11 @@ interface IProps {
 
 defineProps<IProps>();
 </script>
+
+<style scoped>
+.not-found {
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 15px 0;
+}
+</style>

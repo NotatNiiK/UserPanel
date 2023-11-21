@@ -14,28 +14,4 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-.home {
-  height: 100%;
-  padding: 100px 0 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__body {
-    max-width: 578px;
-  }
-
-  &__title {
-    margin-bottom: 20px;
-    font-weight: 700;
-    font-size: 2rem;
-  }
-
-  &__paragraph {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    line-height: 120%;
-  }
-}
-</style>
+<style scoped src="../assets/styles/views/mainpage.scss"></style>

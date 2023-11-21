@@ -9,17 +9,23 @@
           :text="errorAlert.message"
         ></v-alert>
         <users-list :users="store.state.users" :loading="isLoading" />
+        <the-pagination
+          :total-pages="2"
+          @change-page="changePage"
+          :current-page="currentPage"
+        />
       </div>
     </v-container>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { IPageParams } from "../models/api.response.ts";
 import { IAlert } from "../models/alert.ts";
 import UsersList from "../components/UsersList.vue";
+import ThePagination from "../components/ThePagination.vue";
 
 const store = useStore();
 
@@ -49,6 +55,14 @@ async function getUsers(pageParams: IPageParams): Promise<void> {
 
 onMounted(async () => {
   await getUsers({ page: currentPage.value, per_page: perPage.value });
+});
+
+function changePage(page: number): void {
+  currentPage.value = page;
+}
+
+watch(currentPage, async (newValue: number) => {
+  await getUsers({ page: newValue, per_page: perPage.value });
 });
 </script>
 

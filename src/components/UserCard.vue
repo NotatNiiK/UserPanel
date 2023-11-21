@@ -24,7 +24,7 @@
       ></v-text-field>
       <v-text-field v-model="localUser.email" label="Email"></v-text-field>
       <v-text-field v-model="localUser.avatar" label="Avatar"></v-text-field>
-      <v-btn class="me-4" type="submit" block> Edit </v-btn>
+      <v-btn class="me-4" type="submit" block>Edit</v-btn>
     </form>
   </Modal>
 </template>
@@ -37,17 +37,14 @@ import Modal from "./UI/Modal.vue";
 interface IProps {
   user: IUser;
 }
+const { user } = defineProps<IProps>();
 
 interface IEmits {
   (e: "edit-user", user: IUser): void;
 }
-
 const emit = defineEmits<IEmits>();
 
-const { user } = defineProps<IProps>();
-
 const localUser = ref<IUser>(JSON.parse(JSON.stringify(user)));
-
 const isModal = ref<boolean>(false);
 
 function toggleModal(): void {

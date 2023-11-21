@@ -16,4 +16,7 @@ export interface IApiError {
   };
 }
 
-export type IPageParams = Pick<IApiResponse, "page" | "per_page">;
+export interface IErrorObject {
+  error: boolean;
+  message: string;
+}

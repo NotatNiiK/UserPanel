@@ -2,12 +2,13 @@
   <div class="panel">
     <v-container>
       <div class="panel__body">
-        <h1 class="panel__title">Users list:</h1>
+        <h1 class="panel__title">Users panel:</h1>
         <v-alert
           v-if="errorAlert.show"
           type="error"
           :text="errorAlert.message"
         ></v-alert>
+        <users-list :users="store.state.users" :loading="isLoading" />
       </div>
     </v-container>
   </div>
@@ -16,31 +17,39 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useFetching } from "../hooks/useFetching.ts";
 import { IPageParams } from "../models/api.response.ts";
 import { IAlert } from "../models/alert.ts";
+import UsersList from "../components/UsersList.vue";
 
 const store = useStore();
 
 const currentPage = ref<number>(1);
 const perPage = ref<number>(6);
+const isLoading = ref<boolean>(false);
 
 const errorAlert = ref<IAlert>({
   show: false,
   message: "",
 });
 
-const [getUsers, isLoading] = useFetching(async (pageParams: IPageParams) => {
-  const response = await store.dispatch("getUsers", pageParams);
-  if (response?.error) {
-    errorAlert.value = {
-      show: true,
-      message: response.message,
-    };
+async function getUsers(pageParams: IPageParams): Promise<void> {
+  try {
+    isLoading.value = true;
+    const response = await store.dispatch("getUsers", pageParams);
+    if (response?.error) {
+      errorAlert.value = {
+        show: true,
+        message: response.message,
+      };
+    }
+  } finally {
+    isLoading.value = false;
   }
-});
+}
 
-onMounted(getUsers);
+onMounted(async () => {
+  await getUsers({ page: currentPage.value, per_page: perPage.value });
+});
 </script>
 
 <style scoped lang="scss">
@@ -50,6 +59,7 @@ onMounted(getUsers);
   &__title {
     font-size: 1.5rem;
     font-weight: 600;
+    margin-bottom: 20px;
   }
 }
 </style>

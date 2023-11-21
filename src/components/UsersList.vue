@@ -13,26 +13,23 @@
 </template>
 
 <script setup lang="ts">
-import { IUsers } from "../models/user";
+import { IUser, IUsers } from "../models/user";
 import UserCard from "../components/UserCard.vue";
 import Loader from "./UI/Loader.vue";
-import { IUser } from "../models/user";
 
 interface IProps {
   users: IUsers;
   loading: boolean;
 }
+defineProps<IProps>();
 
 interface IEmits {
   (e: "edit-user", user: IUser): void;
 }
-
 const emit = defineEmits<IEmits>();
 
-defineProps<IProps>();
-
-function editUser(user: IUser): void {
-  emit("edit-user", user);
+function editUser(editedUser: IUser): void {
+  emit("edit-user", editedUser);
 }
 </script>
 

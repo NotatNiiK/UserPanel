@@ -5,7 +5,7 @@
     <v-row>
       <v-col v-for="user in users" :key="user.id" cols="12" md="4">
         <v-item>
-          <user-card :user="user"></user-card>
+          <user-card :user="user" @edit-user="editUser"></user-card>
         </v-item>
       </v-col>
     </v-row>
@@ -16,13 +16,24 @@
 import { IUsers } from "../models/user";
 import UserCard from "../components/UserCard.vue";
 import Loader from "./UI/Loader.vue";
+import { IUser } from "../models/user";
 
 interface IProps {
   users: IUsers;
   loading: boolean;
 }
 
+interface IEmits {
+  (e: "edit-user", user: IUser): void;
+}
+
+const emit = defineEmits<IEmits>();
+
 defineProps<IProps>();
+
+function editUser(user: IUser): void {
+  emit("edit-user", user);
+}
 </script>
 
 <style scoped>

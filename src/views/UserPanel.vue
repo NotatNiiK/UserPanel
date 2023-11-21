@@ -8,29 +8,22 @@
           type="error"
           :text="errorAlert.message"
         ></v-alert>
-        <users-list :users="store.state.users" :loading="isLoading" />
-        <the-pagination
-          :total-pages="2"
-          @change-page="changePage"
-          :current-page="currentPage"
-        />
+        <users-list :users="users" :loading="isLoading" @edit-user="editUser" />
       </div>
     </v-container>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { IPageParams } from "../models/api.response.ts";
 import { IAlert } from "../models/alert.ts";
 import UsersList from "../components/UsersList.vue";
-import ThePagination from "../components/ThePagination.vue";
+import { IUser, IUsers } from "../models/user";
 
 const store = useStore();
 
-const currentPage = ref<number>(1);
-const perPage = ref<number>(6);
+const users = ref<any>([]);
 const isLoading = ref<boolean>(false);
 
 const errorAlert = ref<IAlert>({
@@ -38,38 +31,47 @@ const errorAlert = ref<IAlert>({
   message: "",
 });
 
-async function getUsers(pageParams: IPageParams): Promise<void> {
+async function getUsers(): Promise<IUsers | void> {
   try {
     isLoading.value = true;
-    const response = await store.dispatch("getUsers", pageParams);
+    const response = await store.dispatch("getUsers");
     if (response?.error) {
       errorAlert.value = {
         show: true,
         message: response.message,
       };
+      return;
     }
+    return response;
   } finally {
     isLoading.value = false;
   }
 }
 
 onMounted(async () => {
-  await getUsers({ page: currentPage.value, per_page: perPage.value });
+  if (!localStorage.getItem("users")) {
+    users.value = await getUsers();
+    localStorage.setItem("users", JSON.stringify(users.value));
+    return;
+  }
+
+  users.value = JSON.parse(localStorage.getItem("users") || "");
 });
 
-function changePage(page: number): void {
-  currentPage.value = page;
+function editUser(editedUser: IUser): void {
+  const index = users.value.findIndex(
+    (user: IUser) => user.id === editedUser.id
+  );
+  users.value[index] = { ...users.value[index], ...editedUser };
+  localStorage.setItem("users", JSON.stringify(users.value));
 }
-
-watch(currentPage, async (newValue: number) => {
-  await getUsers({ page: newValue, per_page: perPage.value });
-});
 </script>
 
 <style scoped lang="scss">
 .panel {
   height: 100%;
   padding: 80px 0 30px;
+
   &__title {
     font-size: 1.5rem;
     font-weight: 600;

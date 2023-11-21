@@ -8,4 +8,12 @@ export interface IApiResponse {
   data: IUsers;
 }
 
+export interface IApiError {
+  response: {
+    data: {
+      message: string;
+    };
+  };
+}
+
 export type IPageParams = Pick<IApiResponse, "page" | "per_page">;
